@@ -19,112 +19,37 @@
 
 <body>
   <div id="vmap" style="width:100%;height:100vh;left:0px;top:0px;"></div>
+  
+  <script>
 
-  <script type="text/javascript">
+    var map;
 
-    var mapOptions = new vw.MapOptions(vw.BasemapType.GRAPHIC, "",
-      vw.DensityType.BASIC,
-      vw.DensityType.BASIC);
+    /* begin -------- 맵 초기화 코드 --------- */
+    function vwmap() {
+      var mapOptions = new vw.MapOptions(
+          vw.BasemapType.GRAPHIC,
+          "",
+          vw.DensityType.FULL,
+          vw.DensityType.BASIC,
+          false,
+          new vw.CameraPosition(
+                new vw.CoordZ(126.921883, 37.524370, 482400),  
+                new vw.Direction(0, -90, 0)
+            ),
+          new vw.CameraPosition(
+                new vw.CoordZ(126.921883, 37.524370, 2982400),  
+                new vw.Direction(0, -90, 0)
+            )
+        );
 
-    map = new vw.Map("vmap", mapOptions);
-
-    function vwmoveTo(x, y, z) {
-      var movePo = new vw.CoordZ(x, y, z);
-      var mPosi = new vw.CameraPosition(movePo, new vw.Direction(0, 40, 0));
-      map.lookat.moveTo(mPosi);
+      map = new vw.Map("vmap", mapOptions);
     }
+    
+    // 웹지엘 지도 호출.
+    vwmap();
 
-    function makeVectorLayer() {
-      extrudeFlag = false;
-      var sVector = new vw.source.Vector();
-      var lVector = new vw.layer.Vector(sVector);
-      lVector.setName("Example Layer");
-      lVector.getLabelRenderer().setRenderer(new vw.renderer.SimpleRenderer());
-      lVector.getLabelRenderer().getRenderer().getStyle().getText().getFont().setColor(vw.Color.BLUEVIOLET);
-      var render = new vw.renderer.SimpleRenderer();
-      render.getStyle().getStroke().setWidth(5);
-      render.getStyle().getMarker().setSrc("http://vworld.kr/images/op02/map_point.png");
-      lVector.setRenderer(render);
-      map.getLayers().add(lVector);
-    }
+</script>
 
-    function draw() {
-
-      makeVectorLayer();
-
-      var lVector = map.getLayers().getLayer("Example Layer");
-
-      if (lVector == null) {
-        alert("레이어부터 생성해주세요");
-        return false;
-      }
-
-      map._XDcom.getUserLayer().setVisible(258);
-
-      var outlineColor = new vw.Color(255, 0, 0, 220);//"vw.Color.RED";
-      map.getLayers().getLayer("Example Layer").getRenderer().getStyle().getStroke().setColor(outlineColor);
-      var fillColor = new vw.Color(255, 200, 200, 150);//"vw.Color.RED";
-      map.getLayers().getLayer("Example Layer").getRenderer().getStyle().getFill().setColor(fillColor);
-
-      var point1Coord = new vw.CoordZ(126.844972, 37.416067, 30);
-      var point2Coord = new vw.CoordZ(126.855777, 37.416067, 30);
-      var point3Coord = new vw.CoordZ(126.855777, 37.404602, 30);
-      var point4Coord = new vw.CoordZ(126.844972, 37.404602, 30);
-
-      var coordCol = new vw.Collection([point1Coord, point2Coord, point3Coord, point4Coord]);
-      var lines = new vw.geom.Polygon(coordCol);
-      var lineFeature = new vw.Feature(lines, null);
-      lineFeature.getAttributes().set("title", "폴리폴리");
-      lVector.getSource().getFeatures().add(lineFeature);
-
-      var outlineColor2 = new vw.Color(255, 255, 0, 210);//"vw.Color.RED";
-      map.getLayers().getLayer("Example Layer").getRenderer().getStyle().getStroke().setColor(outlineColor2);
-      var fillColor2 = new vw.Color(100, 255, 100, 200);//"vw.Color.RED";
-      map.getLayers().getLayer("Example Layer").getRenderer().getStyle().getFill().setColor(fillColor2);
-
-
-      var point1Coord1 = new vw.CoordZ(126.851630, 37.408713, 30);
-      var point2Coord2 = new vw.CoordZ(126.852393, 37.409012, 100);
-      var point3Coord3 = new vw.CoordZ(126.852794, 37.408170, 100);
-      var point4Coord4 = new vw.CoordZ(126.852172, 37.407873, 100);
-      var coordCol2 = new vw.Collection([point1Coord1, point2Coord2, point3Coord3, point4Coord4]);
-      var lines2 = new vw.geom.Polygon(coordCol2);
-      var lineFeature2 = new vw.Feature(lines2, null);
-      lineFeature.getAttributes().set("title", "폴리폴리2");
-      lVector.getSource().getFeatures().add(lineFeature2);
-
-    }
-
-
-
-    function setMarker(lng, lat, mngNo) {
-
-      var sVector = new vw.source.Vector();
-      var lVector = new vw.layer.Vector(sVector);
-      lVector.setName(mngNo);
-      lVector.getLabelRenderer().setRenderer(new vw.renderer.SimpleRenderer());
-      lVector.getLabelRenderer().getRenderer().getStyle().getText().getFont().setColor(vw.Color.BLUEVIOLET);
-      //lVector.getLabelRenderer().getRenderer().getStyle().getText().getFont().setFontStyle(n,50,200,m,l)
-      var render = new vw.renderer.SimpleRenderer();
-      render.getStyle().getStroke().setWidth(5);
-      //C:\\Users\\oss98\\Desktop\\V월드웹테스트\\그림1.png
-      //render.getStyle().getMarker().setSrc('http://www.vworld.kr/images/op02/map_point.png');
-      render.getStyle().getMarker().setSrc("marker.png");
-      lVector.setRenderer(render);
-      map.getLayers().add(lVector);
-
-      var point1Coord = new vw.Coord(lng, lat);
-      var point1 = new vw.geom.Point(point1Coord);
-      var poiFeature = new vw.Feature(point1, null);
-      poiFeature.getAttributes().set('title', mngNo);
-      lVector.getSource().getFeatures().add(poiFeature);
-
-      // map.on('onLMouseUp', Event_SOPBalloon);
-    }
-
-
-
-  </script>
 </body>
 
 </html>
