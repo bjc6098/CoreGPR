@@ -29,12 +29,6 @@
 
     map = new vw.Map("vmap", mapOptions);
 
-    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
-      mapOption = {
-        center: new kakao.maps.LatLng(37.391731, 126.742691), // 지도의 중심좌표
-        level: 7 // 지도의 확대 레벨
-      };
-
     function vwmoveTo(x, y, z) {
       var movePo = new vw.CoordZ(x, y, z);
       var mPosi = new vw.CameraPosition(movePo, new vw.Direction(0, 40, 0));
