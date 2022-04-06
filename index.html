@@ -35,17 +35,10 @@
         level: 7 // 지도의 확대 레벨
       };
 
-    // 지도를 표시할 div와  지도 옵션으로  지도를 생성합니다
-    var map = new kakao.maps.Map(mapContainer, mapOption);
-
     function vwmoveTo(x, y, z) {
-      ChangeText();
       var movePo = new vw.CoordZ(x, y, z);
       var mPosi = new vw.CameraPosition(movePo, new vw.Direction(0, 40, 0));
       map.lookat.moveTo(mPosi);
-
-      setMarker(126.852294, 37.408822, '광명 공공임대형공장');
-
     }
 
     function makeVectorLayer() {
