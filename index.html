@@ -145,18 +145,16 @@
       a *= 1;
 
       polygons[a].setMap(false);
-      //polygons.splice(a, 1);
 
-      polygons_start_marker[a].setMap(false);
-      //polygons_start_marker.splice(a, 1);
+      //polygons_start_marker[a].setMap(false);
 
-      polygons_end_marker[a].setMap(false);
+      //polygons_end_marker[a].setMap(false);
 
-      for(var i = 0 ; i < polygons_path[a].length;i++)
-      {
-        polygons_path[a][i].setMap(false);
-      }
-      //polygons_end_marker.splice(a, 1);
+      
+      //for(var i = 0 ; i < polygons_path[a].length;i++)
+      //{
+      //  polygons_path[a][i].setMap(false);
+      //}
 
     }
 
@@ -165,19 +163,15 @@
       a *= 1;
 
       polygons[a].setMap(map);
-      //polygons.splice(a, 1);
 
-      polygons_start_marker[a].setMap(map);
-      //polygons_start_marker.splice(a, 1);
+      //polygons_start_marker[a].setMap(map);
 
-      polygons_end_marker[a].setMap(map);
+      //polygons_end_marker[a].setMap(map);
 
-      for(var i = 0 ; i < polygons_path[a].length;i++)
-      {
-        polygons_path[a][i].setMap(map);
-      }
-
-      //polygons_end_marker.splice(a, 1);
+      //for(var i = 0 ; i < polygons_path[a].length;i++)
+      //{
+      //  polygons_path[a][i].setMap(map);
+      //}
 
     }
 
@@ -189,11 +183,22 @@
       var name = c;
       var linePath = new Array();
 
-      for (var i = 0; i < lat.length - 2; i++) {
-        linePath.push(new kakao.maps.LatLng(lat[i + 1], log[i + 1]));
+     // alert(lat.length);
+
+      lat.splice(0, 1);
+      lat.splice(lat.length-1, 1);
+     // alert(lat.length);
+
+      log.splice(0, 1);
+      log.splice(log.length-1, 1);
+
+      for (var i = 0; i < lat.length; i++) {
+        //linePath.push(new kakao.maps.LatLng(lat[i + 1], log[i + 1]));
+        linePath.push(new kakao.maps.LatLng(lat[i], log[i]));
       }
 
-      var len = (lat.length - 2) / 2;
+      var len = linePath.length / 2;
+      //alert(len);
 
       //var iwContent_start = '<div style="padding:5px;">시작점</div>';
       // var iwContent_end = '<div style="padding:5px;">종료점</div>';
@@ -211,22 +216,27 @@
 
       // 맵에 폴리곤 탑재
       polygon.setMap(map);
+      polygon.setZIndex(4);
+
       var paht_arr = [];
-      for (var i = 0; i < len - 10; i += 20) {
+
+      var testline = false;
+
+      for (var i = 0; i < len - 3; i += 6) {
         var triPath = new Array();
-
-        var i2 = len - 1 - i;
-
-        var i3 = len - 1 - (i + 2);
-
-        triPath.push(new kakao.maps.LatLng(lat[i], log[i]));
-        triPath.push(new kakao.maps.LatLng(lat[i + 2] + lat[i3], log[i + 2] + log[i3]));
-        triPath.push(new kakao.maps.LatLng(lat[i2], log[i2]));
+        var i2 = (len*2) - 1 - i;
+        var i3 = (len *2)- 1 - (i + 1);
+        triPath.push(linePath[i]);
+        var lat22 = (lat[i+1]*1 + lat[i3]*1) *0.5;
+        var log22 = (log[i+1]*1 + log[i3]*1) *0.5;
+        triPath.push(new kakao.maps.LatLng(lat22,log22));
+        triPath.push(linePath[i2]);
 
         // 지도에 표시할 선을 생성합니다
+        /*
         var pathline = new kakao.maps.Polyline({
-          path: linePath, // 선을 구성하는 좌표배열 입니다
-          strokeWeight: 3, // 선의 두께 입니다
+          path: triPath, // 선을 구성하는 좌표배열 입니다
+          strokeWeight: 2, // 선의 두께 입니다
           strokeColor: '#FF0000', // 선의 색깔입니다
           strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
           strokeStyle: 'solid' // 선의 스타일입니다
@@ -234,10 +244,13 @@
 
         // 지도에 선을 표시합니다 
         pathline.setMap(map);
-        paht_arr.push(pathline);
-      }
+        */
 
-      polygons_path.push(paht_arr);
+        paht_arr.push(triPath);
+      }
+      
+
+      //polygons_path.push(paht_arr);
 
 
 
@@ -258,17 +271,22 @@
 
       var mouseoverOption = {
         fillColor: '#E9FFE0', // 채우기 색깔입니다
-        fillOpacity: 0.9 // 채우기 불투명도 입니다        
+        fillOpacity: 0.2, // 채우기 불투명도 입니다       
+        strokeColor: '#00FF00', // 선의 색깔입니다 
+        strokeWeight: 1.4
       };
 
       var mouseoutOption = {
         fillColor: '#8FFF86', // 채우기 색깔입니다 
-        fillOpacity: 0.9 // 채우기 불투명도 입니다        
+        fillOpacity: 0.9, // 채우기 불투명도 입니다        
+        strokeColor: '#23A41A',
+        strokeWeight: 1
       };
 
 
       var content3 = '<div class ="label"><span class="left"></span><span class="center">' + name + '</span><span class="right"></span></div>';
       var position3 = new kakao.maps.LatLng(33.450701, 126.570667);
+
       var r_name = new kakao.maps.CustomOverlay({
         position: position3,
         content: content3
@@ -287,10 +305,36 @@
         });
 
         customOverlay2.setMap(map);
-
-
         r_name = customOverlay2;
         polygon.setOptions(mouseoverOption);
+
+        for (var i = 0; i < paht_arr.length ; i++) {
+          // 지도에 표시할 선을 생성합니다
+          var pathline = new kakao.maps.Polyline({
+            path: paht_arr[i], // 선을 구성하는 좌표배열 입니다
+            strokeWeight: 2, // 선의 두께 입니다
+            strokeColor: '#FF0000', // 선의 색깔입니다
+            strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+            strokeStyle: 'solid' // 선의 스타일입니다
+          });
+  
+          // 지도에 선을 표시합니다 
+          pathline.setMap(map);
+          pathline.setZIndex(3);
+
+          /*
+          kakao.maps.event.addListener(pathline, 'mouseover', function () {
+            testline = true;
+          });
+
+          kakao.maps.event.addListener(pathline, 'mouseout', function () {
+            testline = false;
+          });
+          */
+
+
+          polygons_path.push(pathline);
+        }
 
       });
 
@@ -299,6 +343,11 @@
         road_flag = false;
         r_name.setMap(false);
         polygon.setOptions(mouseoutOption);
+        for(var i = 0 ; i < polygons_path.length ; i++)
+        {
+          polygons_path[i].setMap(false);
+        }
+        polygons_path.splice(0,polygons_path.length);
 
       });
 
@@ -314,6 +363,8 @@
 
       polygons.push(polygon);
 
+      /*
+
       var imageSrc_start = "marker_start.png";
       var imageSrc_end = "marker_end.png";
       var imageSize = new kakao.maps.Size(34, 39); // 마커이미지의 크기입니다
@@ -321,7 +372,6 @@
 
       var markerImage_start = new kakao.maps.MarkerImage(imageSrc_start, imageSize, imageOption);
       var markerImage_end = new kakao.maps.MarkerImage(imageSrc_end, imageSize, imageOption);
-
 
       var marker_start = new kakao.maps.Marker({
         position: linePath[0],
@@ -340,6 +390,7 @@
       marker_end.setMap(map);
 
       polygons_end_marker.push(marker_end);
+      */
 
 
     }
@@ -361,6 +412,7 @@
       });
 
       marker.setMap(map);
+      marker.setZIndex(5);
       poi_markers.push(marker);
     }
 
