@@ -114,11 +114,6 @@
 
     var flag = false;
 
-
-
-
-
-
     var CenterLatLon;
     function Center() {
       map.setCenter(CenterLatLon);
@@ -138,7 +133,44 @@
 
     var roadid;
     var road_flag = false;
-    var polygons = new Array();
+    //var polygons = new Array();
+    var polygons = [];
+
+
+    var polygons_start_marker = [];
+    var polygons_end_marker = [];
+
+
+    function HiddenRoad(a) {
+
+      a *= 1;
+
+      polygons[a].setMap(false);
+      //polygons.splice(a, 1);
+
+      polygons_start_marker[a].setMap(false);
+      //polygons_start_marker.splice(a, 1);
+
+      polygons_end_marker[a].setMap(false);
+      //polygons_end_marker.splice(a, 1);
+
+    }
+
+    function ViewRoad(a) {
+
+      a *= 1;
+
+      polygons[a].setMap(true);
+      //polygons.splice(a, 1);
+
+      polygons_start_marker[a].setMap(true);
+      //polygons_start_marker.splice(a, 1);
+
+      polygons_end_marker[a].setMap(true);
+      //polygons_end_marker.splice(a, 1);
+
+    }
+    
 
     // 측선 생성 함수
     function CreateRoad(a, b, c) {
@@ -248,12 +280,16 @@
 
       marker_start.setMap(map);
 
+      polygons_start_marker.push(marker_start);
+
       var marker_end = new kakao.maps.Marker({
         position: linePath[len - 1],
         image: markerImage_end
       });
 
       marker_end.setMap(map);
+
+      polygons_end_marker.push(marker_end);
 
 
     }
