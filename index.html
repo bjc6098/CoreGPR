@@ -135,8 +135,7 @@
     var road_flag = false;
     //var polygons = new Array();
     var polygons = [];
-
-
+    var polygons_path = [];
     var polygons_start_marker = [];
     var polygons_end_marker = [];
 
@@ -152,6 +151,11 @@
       //polygons_start_marker.splice(a, 1);
 
       polygons_end_marker[a].setMap(false);
+
+      for(var i = 0 ; i < polygons_path[a].length;i++)
+      {
+        polygons_path[a][i].setMap(false);
+      }
       //polygons_end_marker.splice(a, 1);
 
     }
@@ -167,10 +171,16 @@
       //polygons_start_marker.splice(a, 1);
 
       polygons_end_marker[a].setMap(map);
+
+      for(var i = 0 ; i < polygons_path[a].length;i++)
+      {
+        polygons_path[a][i].setMap(map);
+      }
+
       //polygons_end_marker.splice(a, 1);
 
     }
-    
+
 
     // 측선 생성 함수
     function CreateRoad(a, b, c) {
@@ -179,15 +189,14 @@
       var name = c;
       var linePath = new Array();
 
-
       for (var i = 0; i < lat.length - 2; i++) {
         linePath.push(new kakao.maps.LatLng(lat[i + 1], log[i + 1]));
       }
 
       var len = (lat.length - 2) / 2;
 
-      var iwContent_start = '<div style="padding:5px;">시작점</div>';
-      var iwContent_end = '<div style="padding:5px;">종료점</div>';
+      //var iwContent_start = '<div style="padding:5px;">시작점</div>';
+      // var iwContent_end = '<div style="padding:5px;">종료점</div>';
 
       var polygon = new kakao.maps.Polygon({
         path: linePath,
@@ -202,6 +211,50 @@
 
       // 맵에 폴리곤 탑재
       polygon.setMap(map);
+      var paht_arr = [];
+      for (var i = 0; i < len - 10; i += 20) {
+        var triPath = new Array();
+
+        var i2 = len - 1 - i;
+
+        var i3 = len - 1 - (i + 2);
+
+        triPath.push(new kakao.maps.LatLng(lat[i], log[i]));
+        triPath.push(new kakao.maps.LatLng(lat[i + 2] + lat[i3], log[i + 2] + log[i3]));
+        triPath.push(new kakao.maps.LatLng(lat[i2], log[i2]));
+
+        // 지도에 표시할 선을 생성합니다
+        var pathline = new kakao.maps.Polyline({
+          path: linePath, // 선을 구성하는 좌표배열 입니다
+          strokeWeight: 3, // 선의 두께 입니다
+          strokeColor: '#FF0000', // 선의 색깔입니다
+          strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+          strokeStyle: 'solid' // 선의 스타일입니다
+        });
+
+        // 지도에 선을 표시합니다 
+        pathline.setMap(map);
+        paht_arr.push(pathline);
+      }
+
+      polygons_path.push(paht_arr);
+
+
+
+
+      //public Vector3 convert_right(Vector3 a)
+      //{
+      //    return new Vector3(a.z, 0, -a.x);
+      //}
+
+      //public Vector3 convert_left(Vector3 a)
+      //{
+      //    return new Vector3(-a.z, 0, a.x);
+      //}
+
+
+
+
 
       var mouseoverOption = {
         fillColor: '#E9FFE0', // 채우기 색깔입니다
@@ -260,9 +313,6 @@
       map.setCenter(moveLatLon);
 
       polygons.push(polygon);
-
-
-
 
       var imageSrc_start = "marker_start.png";
       var imageSrc_end = "marker_end.png";
