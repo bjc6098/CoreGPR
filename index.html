@@ -272,8 +272,8 @@
       var mouseoverOption = {
         fillColor: '#E9FFE0', // 채우기 색깔입니다
         fillOpacity: 0.2, // 채우기 불투명도 입니다       
-        strokeColor: '#00FF00', // 선의 색깔입니다 
-        strokeWeight: 1.4
+        strokeColor: '#22FFFF', // 선의 색깔입니다 
+        strokeWeight: 2
       };
 
       var mouseoutOption = {
@@ -317,11 +317,12 @@
             strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
             strokeStyle: 'solid' // 선의 스타일입니다
           });
+
+          polygon.setZIndex(6);
   
           // 지도에 선을 표시합니다 
           pathline.setMap(map);
-          pathline.setZIndex(3);
-
+          pathline.setZIndex(5);
           /*
           kakao.maps.event.addListener(pathline, 'mouseover', function () {
             testline = true;
@@ -348,6 +349,8 @@
           polygons_path[i].setMap(false);
         }
         polygons_path.splice(0,polygons_path.length);
+
+        polygon.setZIndex(4);
 
       });
 
