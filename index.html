@@ -402,7 +402,9 @@
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-    var poi_markers = [];
+    const poi_markers = [];
+    const poi_markers_name = [];
+    const poi_markers_infobox = [];
     var markerPosition2 = new kakao.maps.LatLng(33.450701, 126.570667);
 
     function CreateMarker(a, b) {
@@ -420,18 +422,37 @@
       marker.setMap(map);
       marker.setZIndex(5);
       poi_markers.push(marker);
+      poi_markers_name.push(name);
+
+      var infowindow = new kakao.maps.InfoWindow({
+        content: name
+      });
+      infowindow.open(map, marker);
+
+      poi_markers_infobox.push(infowindow);
     }
 
 
     function RemoveMarker(a) {
       a *= 1;
       poi_markers[a].setMap(false);
+      poi_markers_infobox[a].close();
+      poi_markers_infobox.splice(a, 1);
       poi_markers.splice(a, 1);
+      poi_markers_name.splice(a, 1);
+
     }
 
     function MapCenterMove(a) {
       var point = a.split(",");
       map.setCenter(new kakao.maps.LatLng(point[1], point[2]));
+    }
+
+    function RenameMarker(a,b) {
+      a *= 1;
+      var name = b;
+      poi_markers_name[a] = name;
+      poi_markers_infobox[a].content = name;
     }
 
 
