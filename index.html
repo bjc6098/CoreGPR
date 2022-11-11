@@ -130,12 +130,7 @@
 
 
 
-    function MoveMap(a,b) {
-      const lat = a*1.0;
-      const log = b*1.0;
-      const center = new kakao.maps.LatLng(lat,log);
-      map.setCenter(center);
-    }
+    
 
 
     function Point() {
@@ -429,11 +424,15 @@
 
 
     function RemoveMarker(a) {
-
       a *= 1;
       poi_markers[a].setMap(false);
       poi_markers.splice(a, 1);
+    }
 
+    function MapCenterMove(a,b) {
+      const lat = a*1.0;
+      const log = b*1.0;
+      map.setCenter(new kakao.maps.LatLng(lat,log));
     }
 
 
