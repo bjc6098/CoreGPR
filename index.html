@@ -429,10 +429,9 @@
       poi_markers.splice(a, 1);
     }
 
-    function MapCenterMove(a,b) {
-      const lat = a*1.0;
-      const log = b*1.0;
-      map.setCenter(new kakao.maps.LatLng(lat,log));
+    function MapCenterMove(a) {
+      var point = a.split(",");
+      map.setCenter(new kakao.maps.LatLng(point[1], point[2]));
     }
 
 
