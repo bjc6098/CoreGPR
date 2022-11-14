@@ -118,6 +118,13 @@
 
 
     var mapclickflag = false;
+
+
+    var sColor = '#23A41A';
+    var fColor = '#8FFF86';
+
+
+
     
     
     // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
@@ -194,6 +201,11 @@
 
     // 측선 생성 함수
     function CreateRoad(a, b, c) {
+
+
+      //polygons.push(polygon);
+
+
       var lat = a.split(",");
       var log = b.split(",");
       var name = c;
@@ -222,13 +234,12 @@
       var polygon = new kakao.maps.Polygon({
         path: linePath,
         strokeWeight: 1, // 선의 두께 입니다
-        strokeColor: '#23A41A', // 선의 색깔입니다
+        strokeColor: sColor, // 선의 색깔입니다
         strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
         strokeStyle: 'solid', // 선의 스타일입니다
-        fillColor: '#8FFF86', // 채우기 색깔입니다
+        fillColor: fColor, // 채우기 색깔입니다
         fillOpacity: 0.9 // 채우기 불투명도 입니다
       });
-
 
       // 맵에 폴리곤 탑재
       polygon.setMap(map);
@@ -247,54 +258,20 @@
         var log22 = (log[i+1]*1 + log[i3]*1) *0.5;
         triPath.push(new kakao.maps.LatLng(lat22,log22));
         triPath.push(linePath[i2]);
-
-        // 지도에 표시할 선을 생성합니다
-        /*
-        var pathline = new kakao.maps.Polyline({
-          path: triPath, // 선을 구성하는 좌표배열 입니다
-          strokeWeight: 2, // 선의 두께 입니다
-          strokeColor: '#FF0000', // 선의 색깔입니다
-          strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-          strokeStyle: 'solid' // 선의 스타일입니다
-        });
-        // 지도에 선을 표시합니다 
-        pathline.setMap(map);
-        */
-
         paht_arr.push(triPath);
       }
-      
-
-      //polygons_path.push(paht_arr);
-
-
-
-
-      //public Vector3 convert_right(Vector3 a)
-      //{
-      //    return new Vector3(a.z, 0, -a.x);
-      //}
-
-      //public Vector3 convert_left(Vector3 a)
-      //{
-      //    return new Vector3(-a.z, 0, a.x);
-      //}
-
-
-
-
 
       var mouseoverOption = {
-        fillColor: '#E9FFE0', // 채우기 색깔입니다
+        fillColor: fColor, // 채우기 색깔입니다
         fillOpacity: 0.2, // 채우기 불투명도 입니다       
-        strokeColor: '#22FFFF', // 선의 색깔입니다 
+        strokeColor: sColor, // 선의 색깔입니다 
         strokeWeight: 2
       };
 
       var mouseoutOption = {
-        fillColor: '#8FFF86', // 채우기 색깔입니다 
+        fillColor: fColor, // 채우기 색깔입니다 
         fillOpacity: 0.9, // 채우기 불투명도 입니다        
-        strokeColor: '#23A41A',
+        strokeColor: sColor,
         strokeWeight: 1
       };
 
@@ -390,28 +367,6 @@
 
       polygons.push(polygon);
 
-      /*
-      var imageSrc_start = "marker_start.png";
-      var imageSrc_end = "marker_end.png";
-      var imageSize = new kakao.maps.Size(34, 39); // 마커이미지의 크기입니다
-      var imageOption = { offset: new kakao.maps.Point(14, 39) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
-      var markerImage_start = new kakao.maps.MarkerImage(imageSrc_start, imageSize, imageOption);
-      var markerImage_end = new kakao.maps.MarkerImage(imageSrc_end, imageSize, imageOption);
-      var marker_start = new kakao.maps.Marker({
-        position: linePath[0],
-        image: markerImage_start
-      });
-      marker_start.setMap(map);
-      polygons_start_marker.push(marker_start);
-      var marker_end = new kakao.maps.Marker({
-        position: linePath[len - 1],
-        image: markerImage_end
-      });
-      marker_end.setMap(map);
-      polygons_end_marker.push(marker_end);
-      */
-
-
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -484,6 +439,180 @@
       poi_markers_name[a] = name;
       poi_markers_infobox[a].content.setContent(iwContent);
     }
+
+
+
+
+     // 측선 생성 함수
+    function MapUpdate(a, b, c,d,e) {
+
+      for(let i = 0 ; i < polygons.length;i++)
+      {
+        polygon[i].setMap(false);
+      }
+
+      for(let i = 0 ; i < polygons_path.length;i++)
+      {
+        polygons_path[i].setMap(false);
+      }
+
+      polygon.length = 0;
+      polygons_path.length = 0;
+
+      //polygons.push(polygon);
+
+      var lat = a.split(",");
+      var log = b.split(",");
+      var name = c;
+      sColor = d;
+      fColor = e;
+      
+      var linePath = new Array();
+
+      lat.splice(0, 1);
+      lat.splice(lat.length-1, 1);
+
+      log.splice(0, 1);
+      log.splice(log.length-1, 1);
+
+      for (var i = 0; i < lat.length; i++) {
+        linePath.push(new kakao.maps.LatLng(lat[i], log[i]));
+      }
+
+      var len = linePath.length / 2;
+
+      var polygon = new kakao.maps.Polygon({
+        path: linePath,
+        strokeWeight: 1, // 선의 두께 입니다
+        strokeColor: sColor, // 선의 색깔입니다
+        strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+        strokeStyle: 'solid', // 선의 스타일입니다
+        fillColor: fColor, // 채우기 색깔입니다
+        fillOpacity: 0.9 // 채우기 불투명도 입니다
+      });
+
+      // 맵에 폴리곤 탑재
+      polygon.setMap(map);
+      polygon.setZIndex(4);
+
+      var paht_arr = [];
+
+      var testline = false;
+
+      for (var i = 0; i < len - 3; i += 6) {
+        var triPath = new Array();
+        var i2 = (len*2) - 1 - i;
+        var i3 = (len *2)- 1 - (i + 1);
+        triPath.push(linePath[i]);
+        var lat22 = (lat[i+1]*1 + lat[i3]*1) *0.5;
+        var log22 = (log[i+1]*1 + log[i3]*1) *0.5;
+        triPath.push(new kakao.maps.LatLng(lat22,log22));
+        triPath.push(linePath[i2]);
+        paht_arr.push(triPath);
+      }
+
+      var mouseoverOption = {
+        fillColor: fColor, // 채우기 색깔입니다
+        fillOpacity: 0.2, // 채우기 불투명도 입니다       
+        strokeColor: sColor, // 선의 색깔입니다 
+        strokeWeight: 2
+      };
+
+      var mouseoutOption = {
+        fillColor: fColor, // 채우기 색깔입니다 
+        fillOpacity: 0.9, // 채우기 불투명도 입니다        
+        strokeColor: sColor,
+        strokeWeight: 1
+      };
+
+      var content3 = '<div class ="label"><span class="left"></span><span class="center">' + name + '</span><span class="right"></span></div>';
+      var position3 = new kakao.maps.LatLng(33.450701, 126.570667);
+
+      var r_name = new kakao.maps.CustomOverlay({
+        position: position3,
+        content: content3
+      });
+
+      // 다각형에 마우스오버 이벤트를 등록합니다
+      kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
+        r_name.setMap(false);
+        var latlng = mouseEvent.latLng;
+        var content2 = '<div class ="label"><span class="left"></span><span class="center">' + name + '</span><span class="right"></span></div>';
+        var position2 = new kakao.maps.LatLng(latlng.getLat(), latlng.getLng() + 0.0001);
+        var customOverlay2 = new kakao.maps.CustomOverlay({
+          position: position2,
+          content: content2
+        });
+
+        customOverlay2.setMap(map);
+        r_name = customOverlay2;
+        polygon.setOptions(mouseoverOption);
+
+        if(mapclickflag == false)
+        {
+          for (var i = 0; i < paht_arr.length ; i++) {
+            // 지도에 표시할 선을 생성합니다
+            var pathline = new kakao.maps.Polyline({
+              path: paht_arr[i], // 선을 구성하는 좌표배열 입니다
+              strokeWeight: 2, // 선의 두께 입니다
+              strokeColor: '#FF0000', // 선의 색깔입니다
+              strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+              strokeStyle: 'solid' // 선의 스타일입니다
+            });
+  
+            polygon.setZIndex(6);
+    
+            // 지도에 선을 표시합니다 
+            pathline.setMap(map);
+            pathline.setZIndex(5);
+  
+            polygons_path.push(pathline);
+          }
+        }
+
+      });
+
+      kakao.maps.event.addListener(polygon, 'mouseout', function () {
+        road_flag = false;
+        r_name.setMap(false);
+        polygon.setOptions(mouseoutOption);
+
+        if(mapclickflag == false)
+        {
+          for(var i = 0 ; i < polygons_path.length ; i++)
+          {
+            polygons_path[i].setMap(false);
+          }
+          polygons_path.splice(0,polygons_path.length);
+  
+          polygon.setZIndex(4);
+        }
+
+      });
+
+      kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
+        if(mapclickflag)
+        {
+          mapclickflag = false;
+        }
+        else
+        {
+          mapclickflag = true;
+        }
+
+        r_name.setMap(false);
+        roadid = name;
+        road_flag = true;
+      });
+
+      var moveLatLon = new kakao.maps.LatLng(lat[parseInt(lat.length / 2)], log[parseInt(lat.length / 2)]);
+      CenterLatLon = moveLatLon;
+      map.setCenter(moveLatLon);
+
+      polygons.push(polygon);
+
+    }
+
 
 
 
