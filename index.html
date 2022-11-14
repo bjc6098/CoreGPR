@@ -454,8 +454,8 @@
 
     function VisibleMarker(a) {
       a *= 1;
-      poi_markers[a].setMap(false);
-      poi_markers_infobox[a].close();
+      poi_markers[a].setMap(map);
+      poi_markers_infobox[a].open(map, poi_markers[a]);
     }
 
 
