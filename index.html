@@ -98,7 +98,6 @@
   <script type="text/javascript"
     src="//dapi.kakao.com/v2/maps/sdk.js?appkey=43dabc7e1a9f0a27c255f08840f28fd9&libraries=services"></script>
   <script>
-
     var mapContainer = document.getElementById('map'),
       mapOption = {
         center: new kakao.maps.LatLng(33.450701, 126.570667),
@@ -125,22 +124,22 @@
 
 
 
-    
-    
+
+
     // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
     var mapTypeControl = new kakao.maps.MapTypeControl();
 
     // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
     // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
     map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
-    
+
     function Center() {
       map.setCenter(CenterLatLon);
     }
 
 
 
-    
+
 
 
     function Point() {
@@ -148,8 +147,7 @@
       if (road_flag == true) {
         road_flag = false;
         return roadid;
-      }
-      else {
+      } else {
         return "noone";
       }
     }
@@ -173,7 +171,7 @@
 
       //polygons_end_marker[a].setMap(false);
 
-      
+
       //for(var i = 0 ; i < polygons_path[a].length;i++)
       //{
       //  polygons_path[a][i].setMap(false);
@@ -211,14 +209,14 @@
       var name = c;
       var linePath = new Array();
 
-     // alert(lat.length);
+      // alert(lat.length);
 
       lat.splice(0, 1);
-      lat.splice(lat.length-1, 1);
-     // alert(lat.length);
+      lat.splice(lat.length - 1, 1);
+      // alert(lat.length);
 
       log.splice(0, 1);
-      log.splice(log.length-1, 1);
+      log.splice(log.length - 1, 1);
 
       for (var i = 0; i < lat.length; i++) {
         //linePath.push(new kakao.maps.LatLng(lat[i + 1], log[i + 1]));
@@ -251,12 +249,12 @@
 
       for (var i = 0; i < len - 3; i += 6) {
         var triPath = new Array();
-        var i2 = (len*2) - 1 - i;
-        var i3 = (len *2)- 1 - (i + 1);
+        var i2 = (len * 2) - 1 - i;
+        var i3 = (len * 2) - 1 - (i + 1);
         triPath.push(linePath[i]);
-        var lat22 = (lat[i+1]*1 + lat[i3]*1) *0.5;
-        var log22 = (log[i+1]*1 + log[i3]*1) *0.5;
-        triPath.push(new kakao.maps.LatLng(lat22,log22));
+        var lat22 = (lat[i + 1] * 1 + lat[i3] * 1) * 0.5;
+        var log22 = (log[i + 1] * 1 + log[i3] * 1) * 0.5;
+        triPath.push(new kakao.maps.LatLng(lat22, log22));
         triPath.push(linePath[i2]);
         paht_arr.push(triPath);
       }
@@ -276,7 +274,8 @@
       };
 
 
-      var content3 = '<div class ="label"><span class="left"></span><span class="center">' + name + '</span><span class="right"></span></div>';
+      var content3 = '<div class ="label"><span class="left"></span><span class="center">' + name +
+        '</span><span class="right"></span></div>';
       var position3 = new kakao.maps.LatLng(33.450701, 126.570667);
 
       var r_name = new kakao.maps.CustomOverlay({
@@ -289,7 +288,8 @@
       kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
         r_name.setMap(false);
         var latlng = mouseEvent.latLng;
-        var content2 = '<div class ="label"><span class="left"></span><span class="center">' + name + '</span><span class="right"></span></div>';
+        var content2 = '<div class ="label"><span class="left"></span><span class="center">' + name +
+          '</span><span class="right"></span></div>';
         var position2 = new kakao.maps.LatLng(latlng.getLat(), latlng.getLng() + 0.0001);
         var customOverlay2 = new kakao.maps.CustomOverlay({
           position: position2,
@@ -300,9 +300,8 @@
         r_name = customOverlay2;
         polygon.setOptions(mouseoverOption);
 
-        if(mapclickflag == false)
-        {
-          for (var i = 0; i < paht_arr.length ; i++) {
+        if (mapclickflag == false) {
+          for (var i = 0; i < paht_arr.length; i++) {
             // 지도에 표시할 선을 생성합니다
             var pathline = new kakao.maps.Polyline({
               path: paht_arr[i], // 선을 구성하는 좌표배열 입니다
@@ -311,17 +310,17 @@
               strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
               strokeStyle: 'solid' // 선의 스타일입니다
             });
-  
+
             polygon.setZIndex(6);
-    
+
             // 지도에 선을 표시합니다 
             pathline.setMap(map);
             pathline.setZIndex(5);
-  
+
             polygons_path.push(pathline);
           }
         }
-        
+
 
       });
 
@@ -331,14 +330,12 @@
         r_name.setMap(false);
         polygon.setOptions(mouseoutOption);
 
-        if(mapclickflag == false)
-        {
-          for(var i = 0 ; i < polygons_path.length ; i++)
-          {
+        if (mapclickflag == false) {
+          for (var i = 0; i < polygons_path.length; i++) {
             polygons_path[i].setMap(false);
           }
-          polygons_path.splice(0,polygons_path.length);
-  
+          polygons_path.splice(0, polygons_path.length);
+
           polygon.setZIndex(4);
         }
 
@@ -346,12 +343,9 @@
 
       kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
 
-        if(mapclickflag)
-        {
+        if (mapclickflag) {
           mapclickflag = false;
-        }
-        else
-        {
+        } else {
           mapclickflag = true;
         }
 
@@ -380,7 +374,8 @@
       var point = a.split(",");
       var markerPosition = new kakao.maps.LatLng(point[1], point[2]);
 
-      var content2 = '<div class ="label"><span class="left"></span><span class="center">' + name + '</span><span class="right"></span></div>';
+      var content2 = '<div class ="label"><span class="left"></span><span class="center">' + name +
+        '</span><span class="right"></span></div>';
 
       var marker = new kakao.maps.Marker({
         position: markerPosition,
@@ -432,7 +427,7 @@
       map.setCenter(new kakao.maps.LatLng(point[1], point[2]));
     }
 
-    function RenameMarker(a,b) {
+    function RenameMarker(a, b) {
       a *= 1;
       var name = b;
       var iwContent = '<div style="width:150px;text-align: center;">' + name + '</div>'
@@ -443,16 +438,14 @@
 
 
 
-     // 측선 생성 함수
-    function MapUpdate(a, b, c,d,e) {
+    // 측선 생성 함수
+    function MapUpdate(a, b, c, d, e) {
 
-      for(let i = 0 ; i < polygons.length;i++)
-      {
+      for (let i = 0; i < polygons.length; i++) {
         polygon[i].setMap(false);
       }
 
-      for(let i = 0 ; i < polygons_path.length;i++)
-      {
+      for (let i = 0; i < polygons_path.length; i++) {
         polygons_path[i].setMap(false);
       }
 
@@ -466,14 +459,14 @@
       var name = c;
       sColor = d;
       fColor = e;
-      
+
       var linePath = new Array();
 
       lat.splice(0, 1);
-      lat.splice(lat.length-1, 1);
+      lat.splice(lat.length - 1, 1);
 
       log.splice(0, 1);
-      log.splice(log.length-1, 1);
+      log.splice(log.length - 1, 1);
 
       for (var i = 0; i < lat.length; i++) {
         linePath.push(new kakao.maps.LatLng(lat[i], log[i]));
@@ -501,12 +494,12 @@
 
       for (var i = 0; i < len - 3; i += 6) {
         var triPath = new Array();
-        var i2 = (len*2) - 1 - i;
-        var i3 = (len *2)- 1 - (i + 1);
+        var i2 = (len * 2) - 1 - i;
+        var i3 = (len * 2) - 1 - (i + 1);
         triPath.push(linePath[i]);
-        var lat22 = (lat[i+1]*1 + lat[i3]*1) *0.5;
-        var log22 = (log[i+1]*1 + log[i3]*1) *0.5;
-        triPath.push(new kakao.maps.LatLng(lat22,log22));
+        var lat22 = (lat[i + 1] * 1 + lat[i3] * 1) * 0.5;
+        var log22 = (log[i + 1] * 1 + log[i3] * 1) * 0.5;
+        triPath.push(new kakao.maps.LatLng(lat22, log22));
         triPath.push(linePath[i2]);
         paht_arr.push(triPath);
       }
@@ -525,7 +518,8 @@
         strokeWeight: 1
       };
 
-      var content3 = '<div class ="label"><span class="left"></span><span class="center">' + name + '</span><span class="right"></span></div>';
+      var content3 = '<div class ="label"><span class="left"></span><span class="center">' + name +
+        '</span><span class="right"></span></div>';
       var position3 = new kakao.maps.LatLng(33.450701, 126.570667);
 
       var r_name = new kakao.maps.CustomOverlay({
@@ -537,7 +531,8 @@
       kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
         r_name.setMap(false);
         var latlng = mouseEvent.latLng;
-        var content2 = '<div class ="label"><span class="left"></span><span class="center">' + name + '</span><span class="right"></span></div>';
+        var content2 = '<div class ="label"><span class="left"></span><span class="center">' + name +
+          '</span><span class="right"></span></div>';
         var position2 = new kakao.maps.LatLng(latlng.getLat(), latlng.getLng() + 0.0001);
         var customOverlay2 = new kakao.maps.CustomOverlay({
           position: position2,
@@ -548,9 +543,8 @@
         r_name = customOverlay2;
         polygon.setOptions(mouseoverOption);
 
-        if(mapclickflag == false)
-        {
-          for (var i = 0; i < paht_arr.length ; i++) {
+        if (mapclickflag == false) {
+          for (var i = 0; i < paht_arr.length; i++) {
             // 지도에 표시할 선을 생성합니다
             var pathline = new kakao.maps.Polyline({
               path: paht_arr[i], // 선을 구성하는 좌표배열 입니다
@@ -559,13 +553,13 @@
               strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
               strokeStyle: 'solid' // 선의 스타일입니다
             });
-  
+
             polygon.setZIndex(6);
-    
+
             // 지도에 선을 표시합니다 
             pathline.setMap(map);
             pathline.setZIndex(5);
-  
+
             polygons_path.push(pathline);
           }
         }
@@ -577,26 +571,21 @@
         r_name.setMap(false);
         polygon.setOptions(mouseoutOption);
 
-        if(mapclickflag == false)
-        {
-          for(var i = 0 ; i < polygons_path.length ; i++)
-          {
+        if (mapclickflag == false) {
+          for (var i = 0; i < polygons_path.length; i++) {
             polygons_path[i].setMap(false);
           }
-          polygons_path.splice(0,polygons_path.length);
-  
+          polygons_path.splice(0, polygons_path.length);
+
           polygon.setZIndex(4);
         }
 
       });
 
       kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
-        if(mapclickflag)
-        {
+        if (mapclickflag) {
           mapclickflag = false;
-        }
-        else
-        {
+        } else {
           mapclickflag = true;
         }
 
@@ -612,12 +601,6 @@
       polygons.push(polygon);
 
     }
-
-
-
-
-
-
   </script>
 </body>
 
