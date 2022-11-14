@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>지도 생성하기</title>
+  <title>GPRCore</title>
   <style>
     .label {
       margin-bottom: 40px;
@@ -424,6 +424,9 @@
       poi_markers.push(marker);
       poi_markers_name.push(name);
 
+
+      var iwContent = '<div style="width:150px;text-align: center;">' + name + '</div>'
+
       var infowindow = new kakao.maps.InfoWindow({
         content: name
       });
@@ -443,6 +446,19 @@
 
     }
 
+    function HideMarker(a) {
+      a *= 1;
+      poi_markers[a].setMap(false);
+      poi_markers_infobox[a].close();
+    }
+
+    function VisibleMarker(a) {
+      a *= 1;
+      poi_markers[a].setMap(false);
+      poi_markers_infobox[a].close();
+    }
+
+
     function MapCenterMove(a) {
       var point = a.split(",");
       map.setCenter(new kakao.maps.LatLng(point[1], point[2]));
@@ -451,8 +467,9 @@
     function RenameMarker(a,b) {
       a *= 1;
       var name = b;
+      var iwContent = '<div style="width:150px;text-align: center;">' + name + '</div>'
       poi_markers_name[a] = name;
-      poi_markers_infobox[a].content = name;
+      poi_markers_infobox[a].content.setContent(iwContent);
     }
 
 
