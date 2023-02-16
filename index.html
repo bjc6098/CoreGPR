@@ -1,3 +1,4 @@
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <!DOCTYPE html>
 <html>
 
@@ -44,35 +45,48 @@
       border-radius: 5px;
     }
 
-    .custom_buttons {
+    #hide_Area {
       position: absolute;
-      top: 50px;
-      right: 10px;
-      width: 36px;
-      height: 40px;
-      overflow: hidden;
+      top: 36px;
+      left: 10px;
+      width: 24px;
+      height: 24px;
       z-index: 1;
       background-color: #f5f5f5;
-    }
 
-    .custom_buttons span {
-      display: block;
-      width: 36px;
-      height: 40px;
-      text-align: center;
+      border: 1px solid #919191;
+      border-radius: 5px;
       cursor: pointer;
     }
 
-    .custom_buttons span img {
-      width: 29px;
-      height: 29px;
-      padding: 5px 0;
-      border: none;
+    #Home_Button {
+      position: absolute;
+      top: 4px;
+      left: 10px;
+      width: 24px;
+      height: 24px;
+      z-index: 1;
+      background-color: #f5f5f5;
+
+      border: 1px solid #919191;
+      border-radius: 5px;
+      cursor: pointer;
     }
 
-    .custom_buttons span:first-child {
-      border-bottom: 1px solid #bfbfbf;
+    #AddressBox {
+      position: absolute;
+      top: 12px;
+      left: 44px;
+      width: 160px;
+      height: 40px;
+      z-index: 1;
+      background-color: #ffffff;
+      border: 1px solid #919191;
+      font-size: 12px;
+      display :none;
     }
+
+
   </style>
   <style>
     html,
@@ -90,14 +104,29 @@
   <div class="map_wrap" style="width:100%;height:100%;">
     <div id="map" style="width:100%;height:100%;"></div>
 
-    <div class="custom_buttons radius_border">
-      <span onclick="Center()"><img src="home.png" alt="새로고침"></span>
+    <div id="Home_Button" onclick="Center()">
+      <img src="home.png" style="position: absolute;width: 16px;height: 16px;top: 4px;left: 4px;">
     </div>
+
+    <div id="hide_Area" onclick="HideArea()">
+      <img id="hide_Area_img" src="Road2.png" style="position: absolute;width: 20px;height: 20px;top: 2px;left: 2px;">
+    </div>
+
+    <div id="AddressBox">
+      <img id="AddressBox_close" src="Cancel.png" onclick="CloseBox()" style="position: absolute;width: 10px;height: 10px;top: 2px;right: 2px;cursor: pointer;">
+
+      <div id="AddressBox_text" style="position: absolute;width: 140px;top: 50%;transform: translateY(-50%);left: 5px;"> 
+        
+      </div>
+    </div>
+
   </div>
+
 
   <script type="text/javascript"
     src="//dapi.kakao.com/v2/maps/sdk.js?appkey=43dabc7e1a9f0a27c255f08840f28fd9&libraries=services"></script>
   <script>
+
     var mapContainer = document.getElementById('map'),
       mapOption = {
         center: new kakao.maps.LatLng(33.450701, 126.570667),
@@ -107,6 +136,9 @@
       };
 
     var map = new kakao.maps.Map(mapContainer, mapOption);
+
+    // 주소-좌표 변환 객체를 생성합니다
+    var geocoder = new kakao.maps.services.Geocoder();
 
     var customOverlays = new Array();
     var polylines = new Array();
@@ -123,8 +155,7 @@
     var fColor = '#8FFF86';
     var hColor = '#FF0000';
 
-
-
+    var hideflag = false;
 
 
     // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
@@ -137,6 +168,25 @@
     function Center() {
       map.setCenter(CenterLatLon);
     }
+
+    function CloseBox() {
+      AddressBox.style.display = "none";
+    }
+
+    kakao.maps.event.addListener(map, 'rightclick', function(mouseEvent) {
+      var coords = mouseEvent.latLng;
+
+      geocoder.coord2Address(coords.getLng(), coords.getLat(), function (result, status)
+      {
+        if (status === kakao.maps.services.Status.OK) {
+          //alert(result[0].address.address_name);
+
+          AddressBox.style.display = "block";
+          AddressBox_text.innerText = result[0].address.address_name;
+
+        }
+      });
+    });
 
 
     function Point() {
@@ -153,12 +203,11 @@
 
       if (marker_click == true) {
         marker_click = false;
-        var str = 'mar_'+marker_index;
+        var str = 'mar_' + marker_index;
         return str;
-      } 
-      else if (road_flag == true) {
+      } else if (road_flag == true) {
         road_flag = false;
-        var str = 'poi_'+click_position;
+        var str = 'poi_' + click_position;
         return str;
       } else {
         return "noone";
@@ -166,15 +215,12 @@
     }
 
 
-
     var marker_click = false;
     var marker_index = '';
-
 
     var click_position;
     var roadid;
     var road_flag = false;
-    //var polygons = new Array();
     var polygons = [];
     var polygons_path = [];
     var polygons_start_marker = [];
@@ -182,72 +228,63 @@
 
 
     function HiddenRoad(a) {
-
       a *= 1;
-
       polygons[a].setMap(false);
-
-      //polygons_start_marker[a].setMap(false);
-
-      //polygons_end_marker[a].setMap(false);
-
-
-      //for(var i = 0 ; i < polygons_path[a].length;i++)
-      //{
-      //  polygons_path[a][i].setMap(false);
-      //}
-
     }
 
     function ViewRoad(a) {
-
       a *= 1;
-
       polygons[a].setMap(map);
-
-      //polygons_start_marker[a].setMap(map);
-
-      //polygons_end_marker[a].setMap(map);
-
-      //for(var i = 0 ; i < polygons_path[a].length;i++)
-      //{
-      //  polygons_path[a][i].setMap(map);
-      //}
-
     }
+
+
+    
+
+    
+    function HideArea() {
+      if (!hideflag) {
+        hideflag = true;
+        hide_Area_img.src = './Road2_x.png';
+
+        for(var i = 0 ; i < polygons.length;i++)
+        {
+          polygons[i].setMap(false);
+        }
+
+      } else {
+        hideflag = false;
+        hide_Area_img.src = './Road2.png';
+
+        for(var i = 0 ; i < polygons.length;i++)
+        {
+          polygons[i].setMap(map);
+        }
+
+
+      }
+    }
+
 
 
     // 측선 생성 함수
     function CreateRoad(a, b, c) {
-
-
-      //polygons.push(polygon);
-
 
       var lat = a.split(",");
       var log = b.split(",");
       var name = c;
       var linePath = new Array();
 
-      // alert(lat.length);
-
       lat.splice(0, 1);
       lat.splice(lat.length - 1, 1);
-      // alert(lat.length);
 
       log.splice(0, 1);
       log.splice(log.length - 1, 1);
 
       for (var i = 0; i < lat.length; i++) {
-        //linePath.push(new kakao.maps.LatLng(lat[i + 1], log[i + 1]));
         linePath.push(new kakao.maps.LatLng(lat[i], log[i]));
       }
 
       var len = linePath.length / 2;
-      //alert(len);
-
-      //var iwContent_start = '<div style="padding:5px;">시작점</div>';
-      // var iwContent_end = '<div style="padding:5px;">종료점</div>';
 
       var polygon = new kakao.maps.Polygon({
         path: linePath,
@@ -264,7 +301,6 @@
       polygon.setZIndex(4);
 
       var paht_arr = [];
-
       var testline = false;
 
       for (var i = 0; i < len - 3; i += 6) {
@@ -293,33 +329,8 @@
         strokeWeight: 1
       };
 
-
-      /*
-      var content3 = '<div class ="label"><span class="left"></span><span class="center">' + name +
-        '</span><span class="right"></span></div>';
-      var position3 = new kakao.maps.LatLng(33.450701, 126.570667);
-
-      var r_name = new kakao.maps.CustomOverlay({
-        position: position3,
-        content: content3
-      });*/
-
-
       // 다각형에 마우스오버 이벤트를 등록합니다
       kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
-        /*
-        r_name.setMap(false);
-        var latlng = mouseEvent.latLng;
-        var content2 = '<div class ="label"><span class="left"></span><span class="center">' + name +
-          '</span><span class="right"></span></div>';
-        var position2 = new kakao.maps.LatLng(latlng.getLat(), latlng.getLng() + 0.0001);
-        var customOverlay2 = new kakao.maps.CustomOverlay({
-          position: position2,
-          content: content2
-        });
-
-        customOverlay2.setMap(map);
-        r_name = customOverlay2;*/
 
         polygon.setOptions(mouseoverOption);
 
@@ -343,8 +354,6 @@
             polygons_path.push(pathline);
           }
         }
-
-
       });
 
       kakao.maps.event.addListener(polygon, 'mouseout', function () {
@@ -361,7 +370,6 @@
 
           polygon.setZIndex(4);
         }
-
       });
 
       kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
@@ -372,8 +380,6 @@
           mapclickflag = true;
         }
 
-
-        //r_name.setMap(false);
         roadid = name;
         road_flag = true;
       });
@@ -430,15 +436,8 @@
       });
 
       kakao.maps.event.addListener(marker, 'mouseover', function () {
-
-
       });
-
-
-
-
     }
-
 
     function RemoveMarker(a) {
       a *= 1;
@@ -447,7 +446,6 @@
       poi_markers_infobox.splice(a, 1);
       poi_markers.splice(a, 1);
       poi_markers_name.splice(a, 1);
-
     }
 
     function HideMarker(a) {
@@ -462,7 +460,6 @@
       poi_markers_infobox[a].open(map, poi_markers[a]);
     }
 
-
     function MapCenterMove(a) {
       var point = a.split(",");
       map.setCenter(new kakao.maps.LatLng(point[1], point[2]));
@@ -476,27 +473,17 @@
       poi_markers_infobox[a].setContent(iwContent);
     }
 
-
     function SelectMarker() {
-
-
       if (road_flag == true) {
         road_flag = false;
         return roadid;
       } else {
         return "noone";
       }
-
-
-
     }
 
-
-
-
-
     // 측선 생성 함수
-    function MapUpdate(a, b, c, d, e , f) {
+    function MapUpdate(a, b, c, d, e, f) {
 
       mapclickflag = false;
 
@@ -510,8 +497,6 @@
 
       polygons.length = 0;
       polygons_path.length = 0;
-
-      //polygons.push(polygon);
 
       var lat = a.split(",");
       var log = b.split(",");
@@ -549,7 +534,6 @@
       polygon.setZIndex(4);
 
       var paht_arr = [];
-
       var testline = false;
 
       for (var i = 0; i < len - 3; i += 6) {
@@ -557,8 +541,8 @@
         var i2 = (len * 2) - 1 - i;
         var i3 = (len * 2) - 1 - (i + 1);
         triPath.push(linePath[i]);
-        var lat22 = (lat[i + 2] * 1 + lat[i3-1] * 1) * 0.5;
-        var log22 = (log[i + 2] * 1 + log[i3-1] * 1) * 0.5;
+        var lat22 = (lat[i + 2] * 1 + lat[i3 - 1] * 1) * 0.5;
+        var log22 = (log[i + 2] * 1 + log[i3 - 1] * 1) * 0.5;
         triPath.push(new kakao.maps.LatLng(lat22, log22));
         triPath.push(linePath[i2]);
         paht_arr.push(triPath);
@@ -578,35 +562,8 @@
         strokeWeight: 1
       };
 
-
-      /*
-      var content3 = '<div class ="label"><span class="left"></span><span class="center">' + name +
-        '</span><span class="right"></span></div>';
-      var position3 = new kakao.maps.LatLng(33.450701, 126.570667);
-
-      
-      var r_name = new kakao.maps.CustomOverlay({
-        position: position3,
-        content: content3
-      });*/
-
       // 다각형에 마우스오버 이벤트를 등록합니다
       kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
-
-        /*
-        r_name.setMap(false);
-        var latlng = mouseEvent.latLng;
-        var content2 = '<div class ="label"><span class="left"></span><span class="center">' + name +
-          '</span><span class="right"></span></div>';
-        var position2 = new kakao.maps.LatLng(latlng.getLat(), latlng.getLng() + 0.0001);
-        var customOverlay2 = new kakao.maps.CustomOverlay({
-          position: position2,
-          content: content2
-        });
-
-        customOverlay2.setMap(map);
-        r_name = customOverlay2;*/
-
         polygon.setOptions(mouseoverOption);
 
         if (mapclickflag == false) {
@@ -634,7 +591,6 @@
 
       kakao.maps.event.addListener(polygon, 'mouseout', function () {
         road_flag = false;
-        //r_name.setMap(false);
 
         if (mapclickflag == false) {
 
@@ -659,7 +615,7 @@
 
         //r_name.setMap(false);
         var latlng = mouseEvent.latLng;
-        click_position = latlng.getLat() + '_'+latlng.getLng();
+        click_position = latlng.getLat() + '_' + latlng.getLng();
 
         roadid = name;
         road_flag = true;
@@ -676,5 +632,4 @@
     }
   </script>
 </body>
-
 </html>
