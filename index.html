@@ -45,6 +45,20 @@
       border-radius: 5px;
     }
 
+    #Home_Button {
+      position: absolute;
+      top: 4px;
+      left: 10px;
+      width: 24px;
+      height: 24px;
+      z-index: 1;
+      background-color: #f5f5f5;
+
+      border: 1px solid #919191;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
     #hide_Area {
       position: absolute;
       top: 36px;
@@ -59,9 +73,9 @@
       cursor: pointer;
     }
 
-    #Home_Button {
+    #hide_Marker {
       position: absolute;
-      top: 4px;
+      top: 68px;
       left: 10px;
       width: 24px;
       height: 24px;
@@ -112,6 +126,10 @@
       <img id="hide_Area_img" src="Road2.png" style="position: absolute;width: 20px;height: 20px;top: 2px;left: 2px;">
     </div>
 
+    <div id="hide_Marker" onclick="HideMarkers()">
+      <img id="hide_Marker_img" src="marker.png" style="position: absolute;width: 20px;height: 20px;top: 2px;left: 2px;">
+    </div>
+
     <div id="AddressBox">
       <img id="AddressBox_close" src="Cancel.png" onclick="CloseBox()" style="position: absolute;width: 10px;height: 10px;top: 2px;right: 2px;cursor: pointer;">
 
@@ -156,6 +174,7 @@
     var hColor = '#FF0000';
 
     var hideflag = false;
+    var hideflag_marker = false;
 
 
     // 일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
@@ -215,6 +234,18 @@
     }
 
 
+    function GetMousePoint2() {
+
+      if (road_flag == true) {
+        road_flag = false;
+        var str = 'rod_' + roadid;
+        return str;
+      } else {
+        return "noone";
+      }
+    }
+
+
     var marker_click = false;
     var marker_index = '';
 
@@ -263,6 +294,34 @@
 
       }
     }
+
+
+    function HideMarkers() {
+      if (!hideflag_marker) {
+        hideflag_marker = true;
+        hide_Marker_img.src = './marker_x.png';
+
+
+        for(var i = 0 ; i < poi_markers.length;i++)
+        {
+          poi_markers[i].setMap(false);
+          poi_markers_infobox[i].close();
+        }
+
+      } else {
+        hideflag_marker = false;
+        hide_Marker_img.src = './marker.png';
+
+        for(var i = 0 ; i < poi_markers.length;i++)
+        {
+          poi_markers[i].setMap(map);
+          poi_markers_infobox[i].open(map, poi_markers[i]);
+        }
+
+
+      }
+    }
+
 
 
 
