@@ -457,6 +457,15 @@
     var poi_markers_infobox = [];
     var markerPosition2 = new kakao.maps.LatLng(33.450701, 126.570667);
 
+
+
+
+    var poi_markers_map2 = [];
+    var poi_markers_infobox_map2 = [];
+
+
+
+
     function CreateMarker(a, b) {
       var name = b;
       var point = a.split(",");
@@ -506,6 +515,70 @@
       poi_markers.splice(a, 1);
       poi_markers_name.splice(a, 1);
     }
+
+    function CreateMarker2(a, b, c) {
+
+      var num = c * 1;
+
+      while(poi_markers_map2.length <= num)
+      {
+        var arr = [];
+        var arr2 = [];
+        poi_markers_map2.push(arr);
+        poi_markers_infobox_map2.push(arr2);
+      }
+
+      var name = b;
+      var point = a.split(",");
+
+      var markerPosition = new kakao.maps.LatLng(point[1], point[2]);
+
+      var content2 = '<div class ="label"><span class="left"></span><span class="center">' + name +
+        '</span><span class="right"></span></div>';
+
+      var marker = new kakao.maps.Marker({
+        position: markerPosition,
+        content: content2
+      });
+
+      marker.setMap(map);
+      marker.setZIndex(5);
+      poi_markers_map2[num].push(marker);
+
+      var iwContent = '<div style="width:150px;text-align:center;">' + name + '</div>'
+
+      var infowindow = new kakao.maps.InfoWindow({
+        content: iwContent
+      });
+
+      infowindow.open(map, marker);
+      poi_markers_infobox_map2[num].push(infowindow);
+    }
+
+
+    function HiddenMarker2(a) {
+      a *= 1;
+      
+      for (var j = 0; j < poi_markers_map2[a].length; j++) {
+        poi_markers_map2[a][j].setMap(false);
+        poi_markers_infobox_map2[a][j].close();
+      }
+    }
+
+    function VisibleMarker2(a) {
+      a *= 1;
+      
+      for (var j = 0; j < poi_markers_map2[a].length; j++) {
+        poi_markers_map2[a][j].setMap(map);
+        poi_markers_infobox_map2[a][j].open(map, poi_markers_map2[a][j]);
+      }
+    }
+
+
+
+
+
+
 
     function HideMarker(a) {
       a *= 1;
