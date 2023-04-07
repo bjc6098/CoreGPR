@@ -451,6 +451,138 @@
 
     }
 
+
+
+    // 측선 생성 함수
+    function CreateRoadColor(a, b, c, d, e, f) {
+
+      var lat = a.split(",");
+      var log = b.split(",");
+      var name = c;
+      sColor = d;
+      fColor = e;
+      hColor = f;
+
+      var linePath = new Array();
+
+      lat.splice(0, 1);
+      lat.splice(lat.length - 1, 1);
+
+      log.splice(0, 1);
+      log.splice(log.length - 1, 1);
+
+      for (var i = 0; i < lat.length; i++) {
+        linePath.push(new kakao.maps.LatLng(lat[i], log[i]));
+      }
+
+      var len = linePath.length / 2;
+
+      var polygon = new kakao.maps.Polygon({
+        path: linePath,
+        strokeWeight: 1, // 선의 두께 입니다
+        strokeColor: sColor, // 선의 색깔입니다
+        strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+        strokeStyle: 'solid', // 선의 스타일입니다
+        fillColor: fColor, // 채우기 색깔입니다
+        fillOpacity: 0.9 // 채우기 불투명도 입니다
+      });
+
+      // 맵에 폴리곤 탑재
+      polygon.setMap(map);
+      polygon.setZIndex(4);
+
+      var paht_arr = [];
+      var testline = false;
+
+      for (var i = 0; i < len - 3; i += 6) {
+        var triPath = new Array();
+        var i2 = (len * 2) - 1 - i;
+        var i3 = (len * 2) - 1 - (i + 1);
+        triPath.push(linePath[i]);
+        var lat22 = (lat[i + 1] * 1 + lat[i3] * 1) * 0.5;
+        var log22 = (log[i + 1] * 1 + log[i3] * 1) * 0.5;
+        triPath.push(new kakao.maps.LatLng(lat22, log22));
+        triPath.push(linePath[i2]);
+        paht_arr.push(triPath);
+      }
+
+      var mouseoverOption = {
+        fillColor: fColor, // 채우기 색깔입니다
+        fillOpacity: 0.2, // 채우기 불투명도 입니다       
+        strokeColor: sColor, // 선의 색깔입니다 
+        strokeWeight: 2
+      };
+
+      var mouseoutOption = {
+        fillColor: fColor, // 채우기 색깔입니다 
+        fillOpacity: 0.9, // 채우기 불투명도 입니다        
+        strokeColor: sColor,
+        strokeWeight: 1
+      };
+
+      // 다각형에 마우스오버 이벤트를 등록합니다
+      kakao.maps.event.addListener(polygon, 'mouseover', function (mouseEvent) {
+
+        polygon.setOptions(mouseoverOption);
+
+        if (mapclickflag == false) {
+          for (var i = 0; i < paht_arr.length; i++) {
+            // 지도에 표시할 선을 생성합니다
+            var pathline = new kakao.maps.Polyline({
+              path: paht_arr[i], // 선을 구성하는 좌표배열 입니다
+              strokeWeight: 2, // 선의 두께 입니다
+              strokeColor: '#FF0000', // 선의 색깔입니다
+              strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+              strokeStyle: 'solid' // 선의 스타일입니다
+            });
+
+            polygon.setZIndex(6);
+
+            // 지도에 선을 표시합니다 
+            pathline.setMap(map);
+            pathline.setZIndex(5);
+
+            polygons_path.push(pathline);
+          }
+        }
+      });
+
+      kakao.maps.event.addListener(polygon, 'mouseout', function () {
+
+        road_flag = false;
+        //r_name.setMap(false);
+        polygon.setOptions(mouseoutOption);
+
+        if (mapclickflag == false) {
+          for (var i = 0; i < polygons_path.length; i++) {
+            polygons_path[i].setMap(false);
+          }
+          polygons_path.splice(0, polygons_path.length);
+
+          polygon.setZIndex(4);
+        }
+      });
+
+      kakao.maps.event.addListener(polygon, 'click', function (mouseEvent) {
+
+        if (mapclickflag) {
+          mapclickflag = false;
+        } else {
+          mapclickflag = true;
+        }
+
+        roadid = name;
+        road_flag = true;
+      });
+
+      var moveLatLon = new kakao.maps.LatLng(lat[parseInt(lat.length / 2)], log[parseInt(lat.length / 2)]);
+      CenterLatLon = moveLatLon;
+      map.setCenter(moveLatLon);
+
+      polygons.push(polygon);
+
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
     var poi_markers = [];
     var poi_markers_name = [];
@@ -613,6 +745,22 @@
         return "noone";
       }
     }
+
+
+    function MapUpdate2()
+    {
+      for (var j = 0; j < polygons.length; j++) {
+        polygons[j].setMap(false);
+      }
+
+      for (var i = 0; i < polygons_path.length; i++) {
+        polygons_path[i].setMap(false);
+      }
+      
+      polygons.length = 0;
+      polygons_path.length = 0;
+    }
+
 
     // 측선 생성 함수
     function MapUpdate(a, b, c, d, e, f) {
