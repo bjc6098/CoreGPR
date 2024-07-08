@@ -648,6 +648,18 @@
       poi_markers_name.splice(a, 1);
     }
 
+    function RemoveMarkerAll() {
+
+      for (var j = 0; j < poi_markers[a].length; j++) {
+        poi_markers[j].setMap(false);
+        poi_markers_infobox[j].close();
+      }
+      
+      poi_markers_infobox.length = 0;
+      poi_markers.length = 0;
+      poi_markers_name.length = 0;
+    }
+
     function CreateMarker2(a, b, c) {
 
       var num = c * 1;
